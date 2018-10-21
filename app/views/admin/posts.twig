@@ -1,0 +1,132 @@
+<link rel="stylesheet" href="/plugins/editor/jquery.cleditor.css">
+<style>
+    .image {
+        height: 200px;
+        background-position: left;
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+    .wrapper {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: 9999;
+        background-color: black;
+        opacity: 0.3;
+    }
+    .modal {
+        position: fixed;
+        display: inline-block;
+        width: 50%;
+        /*margin-top: -10%;*/
+        margin-left: -25%;
+        left: 50%;
+        top: 20%;
+        z-index: 10000;
+    }
+</style>
+
+<script>
+
+    function editName(_this) {
+        _this.innerHTML = `<input type ='text' value='${_this.innerText}'><button class="save">save</button><button class="cancel">cancel</button>`;
+    }
+
+    function editCategory(_this) {
+        _this.innerHTML = `<select>
+                                {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                {% endfor %}
+                          </select><button class="save">save</button><button class="cancel">cancel</button>`;
+    }
+
+    function editContent(_this) {
+        _this.innerHTML = `<div class="wrapper"></div>
+                           <div class="modal">
+                                <textarea id="postcontent", name="content">${_this.innerHTML}</textarea>
+                                <button class="save">save</button>
+                                <button class="cancel">cancel</button>
+                           </div>`;
+        $(document).ready(function () {$("#postcontent").cleditor();});
+
+    }
+
+    function saveName(parrent) {
+        let id = parrent.dataset.id;
+        let name = parrent.querySelector("input").value;
+        Ajax.post("/admin/posts/editname",{
+            postid: id,
+            postname: name
+        }, function (response) {
+            parrent.innerText = name;
+        });
+    }
+
+    function saveCategory(parrent) {
+        let id = parrent.dataset.id;
+        let category = parrent.querySelector("select");
+        let name = category[category.selectedIndex].text;
+        let category_id = category[category.selectedIndex].value;
+        Ajax.post("/admin/posts/editcategory",{
+            postid: id,
+            categoryid: category_id
+        }, function (response) {
+            parrent.innerText = name;
+        });
+    }
+
+    function saveContent(parrent){
+        let id = parrent.dataset.id;
+        let content = parrent.querySelector("textarea").value;
+        Ajax.post("/admin/posts/editcontent",{
+            postid: id,
+            content: content
+        }, function (response) {
+            parrent.innerHTML = content;
+        });
+    }
+
+    document.addEventListener("dblclick", function (e) {
+        let _this = e.target;
+        if (!_this.matches(".editable") && _this.closest(".editable") == null) return;
+        _this.dataset.value = _this.innerText;
+        if (_this.dataset.name == "name") editName(_this);
+        if (_this.dataset.name == "category") editCategory(_this);
+        if (_this.closest(".editable").dataset.name == "content") editContent(_this.closest(".editable"));
+    });
+
+    document.addEventListener("click", function (e) {
+        let _this = e.target;
+        let parrent = _this.closest(".editable");
+        if (_this.matches(".cancel")) {
+            if (parrent.dataset.name == "content"){
+                parrent.innerHTML = parrent.querySelector("textarea").innerText;
+            } else {
+                parrent.innerText = parrent.dataset.value;
+            }
+        }else if (_this.matches(".save")) {
+            if (parrent.dataset.name == "name") saveName(parrent);
+            if (parrent.dataset.name == "category") saveCategory(parrent);
+            if (parrent.dataset.name == "content")saveContent(parrent);
+        }
+    })
+</script>
+{% for post in posts %}
+    <div class="post">
+        <h2 class="editable" data-name="category" data-id="{{ post.id }}">{{ post.category.name }}</h2>
+        <h3 class="editable" data-name="name" data-id="{{ post.id }}">{{ post.name }}</h3>
+        <div class="image" style="background-image: url('{{ post.image }}')"></div>
+        <div class="editable" data-name="content" data-id="{{ post.id }}">{{ post.content | raw}}</div>
+    </div>
+{% endfor %}
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+</script>
+<script src="/plugins/editor/jquery.cleditor.min.js"></script>
+<script>
+    $(document).ready(function () {$("#postcontent").cleditor();});
+</script>

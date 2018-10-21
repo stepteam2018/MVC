@@ -1,0 +1,64 @@
+<h1>{{ header }}</h1>
+
+<h2>Данные на <input class="date" type="date" value="{{ cur_date }}" onChange = "setDate()" title="Дата" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"></h2>
+<a class="refresh" href="#">Обновить</a>
+{% if count == 0 %}
+    <h3>Данные на {{ cur_date | date("d.m.Y") }} отсутствуют</h3>
+    <a class="addLink" href="#" onclick="addData()">Добавить</a>
+    <form class="add" action="/metall2">
+        {% for item in metals %}
+            <div>
+                <label>{{ item.name }}</label>
+                <input name="{{ item.id }}" value="0.00">
+            </div>
+        {% endfor %}
+        <input class="hidden" name="date" value="{{ cur_date }}">
+        <input type="submit" value="Сохранить">
+    </form>
+{% else %}
+    <table>
+        <tbody>
+            <tr>
+                <th>Metal</th>
+                <th>Price (USD/t)</th>
+            </tr>
+            {% for item in lmes %}
+                <tr>
+                    <td>{{ item.name | capitalize }}</td>
+                    <td class="price">{{ item.price | number_format(2,'.',' ') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="#" class="updateLink" onclick="updateData()">Изменить</a>
+    <a href="/metall5?date={{ cur_date }}" class="deleteLink">Удалить</a>
+    <form class="update" action="/metall4">
+        {% for item in lmes %}
+            <div>
+                <label>{{ item.name }}</label>
+                <input name="{{ item.id }}" value="{{ item.price }}">
+            </div>
+        {% endfor %}
+        <input class="hidden" name="date" value="{{ cur_date }}">
+        <input type="submit" value="Записать">
+    </form>
+{% endif %}
+
+<script>
+    function setDate(){
+        let refresh = document.querySelector(".refresh");
+        let date = document.querySelector(".date");
+        refresh.setAttribute("href", "metall3/?date="+date.value);
+    }
+    function addData() {
+        document.querySelector(".add").style.display = "block";
+        document.querySelector(".addLink").style.display = "none";
+    }
+    function updateData() {
+        document.querySelector("table").style.display = "none";
+        document.querySelector(".updateLink").style.display = "none";
+        document.querySelector(".update").style.display = "block";
+    }
+</script>
+
+<a href="/">Home</a>

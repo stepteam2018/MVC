@@ -1,0 +1,38 @@
+{% if (auth) %}
+<link rel="stylesheet" href="/plugins/editor/jquery.cleditor.css">
+<div class="form">
+    <form action="/posts/add/handle" method="post" enctype="multipart/form-data">
+        <dl>
+            <dt>Title:</dt>
+            <dd><input type="text" name="name"></dd>
+            <dt>Category:</dt>
+            <dd>
+                <select name="category">
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </dd>
+            <dt>Image:</dt>
+            <dd><input type="file" name="image" accept="image/*"></dd>
+            <dt>Content:</dt>
+            <dd><textarea id="postcontent", name="content"></textarea></dd>
+            <dd><input type="submit"></dd>
+
+        </dl>
+    </form>
+</div>
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+</script>
+<script src="/plugins/editor/jquery.cleditor.min.js"></script>
+<script>
+    $(document).ready(function () {$("#postcontent").cleditor();});
+</script>
+{% else %}
+    <h2>Только авторизованные пользователи могут добавлять посты </h2>
+    <a href="/login">Войти</a><br>
+    <a href="/register">Зарегистрироваться</a>
+{% endif %}

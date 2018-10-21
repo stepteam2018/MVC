@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>BrownShadow</title>
+    <meta http-equiv="Content-Language" content="English" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
+    <style>
+        #header{
+            position: relative;
+        }
+        .userinfo{
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .userinfo .img{
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            margin-right: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrap">
+
+    <div id="top"> </div>
+
+    <div id="header">
+        <h1><a href="#">Website Title</a></h1>
+        <h2>Subheader, website description H2</h2>
+        {% if(auth) %}
+            <div class="userinfo">
+                <div class="img" style="background-image: url('{{ user.image }}')"></div>
+                <div class="name">{{ user.login }}</div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="menu">
+        <ul>
+            <li><a href="/">Home</a></li>
+            {% if(auth) %}
+                <li><a href="/posts/add">New post</a></li>
+                {% if (user.hasRole("admin")) %}
+                    <li><a href="/admin">Admin panel</a></li>
+                {% endif %}
+            {% endif %}
+
+
+
+            {% if(auth) %}
+                <li style="float:right;padding-right: 20px;"><a href="/logout">Logout</a></li>
+            {% else %}
+                <li style="float:right;padding-right: 20px;"><a href="/login">Login</a></li>
+                <li style="float:right"><a href="/register">Register</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div id="content">
+        <div class="left">
+            {{content|raw}}
+        </div>
+
+        <div class="right">
+            <h2>Categories :</h2>
+            <ul>
+                {% for cat in categories %}
+                    <li><a href="/posts/category/{{ cat.id }}">{{ cat.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div style="clear: both;"> </div>
+    </div>
+
+    <div id="bottom"> </div>
+    <div id="footer">
+        Designed by <a href="http://www.free-css-templates.com/">Free CSS Templates</a>, Thanks to <a href="http://www.openwebdesign.org/">Web Design Company</a>
+    </div>
+</div>
+
+</body>
+</html>

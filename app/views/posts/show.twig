@@ -1,0 +1,8 @@
+<h1>{{ post.name }}</h1>
+<div>
+    {{ post.author.login }}
+    {{ post.time }}
+</div>
+<br>
+<img width="100%" src="{{ post.image }}" alt="{{ post.name }}">
+<div class="content">{{ post.content | raw }}</div>

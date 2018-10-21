@@ -1,0 +1,16 @@
+<style>
+    .image {
+        height: 200px;
+        background-size: cover;
+        background-position: center;
+    }
+</style>
+<h1>main</h1>
+
+{% for post in posts %}
+    <div class="post">
+        <div class="name"><h3>{{ post.name }}</h3></div>
+        <div class="image" style="background-image: url('{{ post.image }}')"></div>
+        <div class="content">{{ post.content | striptags | slice(0, 100) | raw}}<a href="/posts/{{ post.id }}">...</a></div>
+    </div>
+{% endfor %}

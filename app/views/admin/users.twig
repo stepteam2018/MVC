@@ -1,0 +1,86 @@
+<style>
+    table{
+        margin: 20px auto;
+        border: 1px solid black;
+    }
+    table td {
+        padding: 20px;
+        border: 1px solid black;
+    }
+</style>
+<script>
+    document.addEventListener("dblclick", function (e) {
+        let _this = e.target;
+        if (!_this.matches(".editable")) return;
+        _this.dataset.value = _this.innerText;
+        if (_this.dataset.name == "login") editLogin(_this);
+    });
+
+    function editLogin(_this) {
+        _this.innerHTML = `<input type ='text' value='${_this.innerText}'><button class="save">save</button><button class="cancel">cancel</button>`;
+    }
+
+    function saveLogin(parrent){
+        let id = parrent.dataset.id;
+        let value = parrent.querySelector("input").value;
+        Ajax.post("/admin/users/editlogin",{
+            userid: id,
+            value: value
+        }, function (response) {
+            parrent.innerText = value;
+        });
+    }
+
+    document.addEventListener("click", function (e) {
+        let _this = e.target;
+        if (!_this.matches(".save")) return;
+        let parrent = _this.closest(".editable");
+        if (parrent.dataset.name == "login") saveLogin(parrent);
+
+        parrent.innerText = parrent.dataset.value;
+    });
+
+    document.addEventListener("click", function (e) {
+        let _this = e.target;
+        if (!_this.matches(".cancel")) return;
+        let parrent = _this.closest(".editable");
+        parrent.innerText = parrent.dataset.value;
+    })
+</script>
+<table>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td class="editable" data-name="login" data-id="{{ user.id }}">{{ user.login }}</td>
+            <td>
+                <ul>
+                {% for role in user.roles.all() %}
+                    <li>
+                        {{ role.name }}
+                        <form action="/admin/users/delete_role" method="post">
+                            <input type="hidden" value="{{ role.id }}" name="roleid">
+                            <input type="hidden" value="{{ user.id }}" name="userid">
+                            <input type="submit" value="delete">
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+                <div class="addrole">
+                    <form action="/admin/users/add_role" method="post">
+                        <select name="roleid">
+                            {% for r in roles %}
+                                <option value="{{ r.id }}">{{ r.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" value="{{ user.id }}" name="userid">
+                        <input type="submit" value="add">
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+

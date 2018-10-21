@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        body {background-color: lightgray;}
+        h2 {
+            display: inline-block;
+        }
+        .add, .update {
+            display: none;
+        }
+        .addLink, .updateLink, .deleteLink {
+            display: block;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        .price {
+            text-align: right;
+        }
+        label {
+            display: inline-block;
+            width: 80px;
+            text-transform: capitalize
+        }
+        input {
+            width: 60px;
+            text-align: right;
+        }
+        input[type="submit"] {
+            width: 80px;
+        }
+        input[type="date"] {
+            width: 150px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <title>LME</title>
+</head>
+<body>
+    {{content|raw}}
+</body>
+</html>

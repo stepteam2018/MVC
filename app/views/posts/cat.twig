@@ -1,0 +1,20 @@
+<style>
+    .active{
+        color: white;
+        background-color: black;
+    }
+</style>
+{% for post in posts %}
+    <div class="post">
+        <div class="name"><h3>{{ post.name }}</h3></div>
+        <div class="image" style="background-image: url('{{ post.image }}')"></div>
+        <div class="content">{{ post.content | striptags | slice(0, 100) | raw}}<a href="/posts/{{ post.id }}">...</a></div>
+    </div>
+{% endfor %}
+
+{% if pc > 1 %}
+    {% for i in range(1, pc) %}
+        {#<a href="{{ urlbase }} / {{ i }}" {% if page == i %} class="active" {% endif %}>{{ i }}</a>&nbsp;#}
+        <a href="{{ urlbase }}/{{ i }}" {% if page == i %} class="active" {% endif %}>{{ i }}</a>&nbsp;
+    {% endfor %}
+{% endif %}
